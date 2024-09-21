@@ -7,10 +7,10 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreUserRequest extends FormRequest
 {
-    public function authorize()
-    {
-        return $this->user()->can('create', [UserFirebase::class, $this->input('role')]);
-    }
+    // public function authorize()
+    // {
+    //     return $this->user()->can('create', [UserFirebase::class, $this->input('role')]);
+    // }
 
     public function rules()
     {
@@ -23,7 +23,7 @@ class StoreUserRequest extends FormRequest
             'telephone' => 'required|string',
             'photo' => 'nullable|image|max:2048',
             'fonction' => 'required|string',
-            'status' => 'required|in:actif,inactif',
+            'statut' => 'required|in:actif,inactif',
             'role' => 'required|in:Admin,Coach,Manager,CM'
         ];
     }

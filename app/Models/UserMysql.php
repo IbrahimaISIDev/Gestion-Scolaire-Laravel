@@ -1,14 +1,16 @@
 <?php
+
 namespace App\Models;
-use Laravel\Sanctum\HasApiTokens;
+
+use Laravel\Passport\HasApiTokens;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles; // Ajoutez cette ligne
 
 class UserMysql extends Authenticatable
 {
-    use HasApiTokens, Notifiable;
-    
-    protected $connection = 'mysql';
+    use HasApiTokens, Notifiable, HasRoles; // Ajoutez HasRoles ici
+
     protected $fillable = [
         'nom', 
         'prenom', 
@@ -18,11 +20,13 @@ class UserMysql extends Authenticatable
         'telephone', 
         'photo', 
         'fonction', 
-        'status'
+        'statut'
     ];
+
     protected $hidden = [
         'password',
         'remember_token',
     ];
+
     protected $table = 'users';
 }

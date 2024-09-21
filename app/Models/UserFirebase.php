@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Interfaces\UserFirebaseInterface;
 
 class UserFirebase extends FirebaseModel implements UserFirebaseInterface
 {
-   protected $table = 'users';
+   protected $path = 'users';
+
 
     protected $fillable = [
         'nom',
@@ -18,7 +18,7 @@ class UserFirebase extends FirebaseModel implements UserFirebaseInterface
         'telephone',
         'photo',
         'fonction',
-        'status'
+        'statut'
     ];
 
     protected $hidden = [

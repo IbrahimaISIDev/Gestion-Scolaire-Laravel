@@ -22,7 +22,6 @@ abstract class FirebaseModel
         $factory = (new Factory())
             ->withDatabaseUri(config('database.connections.firebase.database'))
             ->withServiceAccount(config('database.connections.firebase.credentials'));
-        
         return $factory->createDatabase();
     }
 
@@ -35,13 +34,24 @@ abstract class FirebaseModel
     public function find($id)
     {
         $result = $this->reference->getChild($id)->getValue();
-        return $result === null ? null : $result;
+        return $result === null ? [] : $result;
     }
 
     public function create(array $data)
     {
-        return $this->reference->push($data)->getKey();
+        $reference = $this->reference;
+        $existingUsers = $reference->orderByKey()->getValue();
+        $nextId = 1;
+        if ($existingUsers) {
+            $keys = array_keys($existingUsers);
+            $keys = array_map('intval', $keys);
+            $nextId = max($keys) + 1;
+        }
+        $newRef = $reference->getChild((string) $nextId);
+        $newRef->set($data);
+        return $nextId;
     }
+
 
     public function update($id, array $data)
     {
@@ -52,6 +62,6 @@ abstract class FirebaseModel
     public function delete($id)
     {
         $this->reference->getChild($id)->remove();
-        return true;
+        return $id;
     }
 }
