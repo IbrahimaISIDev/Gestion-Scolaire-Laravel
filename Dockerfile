@@ -44,8 +44,8 @@ FROM php:8.3-fpm
 # Copier les fichiers de l'étape de construction
 COPY --from=build /var/www /var/www
 
-# Exposer le port défini dans la variable d'environnement PORT
-EXPOSE $PORT
+# Exposer le port 9000 pour PHP-FPM
+EXPOSE 9000
 
 # Changer les permissions du dossier de stockage et de cache
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
