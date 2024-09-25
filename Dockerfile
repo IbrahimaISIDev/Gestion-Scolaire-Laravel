@@ -52,3 +52,4 @@ RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
 # Lancer PHP-FPM au démarrage du container
 CMD ["php-fpm"]
+
