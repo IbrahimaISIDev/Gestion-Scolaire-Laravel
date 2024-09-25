@@ -1,55 +1,42 @@
-# Étape de construction : utiliser une image PHP avec extensions requises pour Laravel
+# Utilisation de l'image PHP officielle
 FROM php:8.3-fpm AS build
 
-# Installer les dépendances nécessaires pour PHP et les extensions
+# Installation des dépendances système
 RUN apt-get update && apt-get install -y \
-    build-essential \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
-    libzip-dev \
     zip \
     unzip \
     git \
     curl \
     libonig-dev \
     libxml2-dev \
-    libcurl4-openssl-dev \
-    libssl-dev \
-    pkg-config \
-    libmagickwand-dev \
-    && pecl install mongodb \
-    && docker-php-ext-enable mongodb
+    libzip-dev
 
-# Installer les extensions PHP requises
+# Installation des extensions PHP requises
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd \
-    && docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl bcmath
+    && docker-php-ext-install pdo_mysql gd mbstring zip xml
 
-# Installer Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Installation de Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Définir le répertoire de travail
-WORKDIR /var/www
+WORKDIR /var/www/html
 
-# Copier tous les fichiers de l'application
+# Copier les fichiers du projet dans le conteneur
 COPY . .
 
-# Installer les dépendances de Composer
+# Installation des dépendances PHP avec Composer
 RUN composer install --no-dev --optimize-autoloader
 
-# Étape finale : utiliser une image PHP plus légère
-FROM php:8.3-fpm
+# Ajuster les permissions des fichiers
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html/storage \
+    && chmod -R 755 /var/www/html/bootstrap/cache
 
-# Copier les fichiers de l'étape de construction
-COPY --from=build /var/www /var/www
+# Exposer le port défini dans la variable d'environnement PORT
+EXPOSE $PORT
 
-# Exposer le port
-EXPOSE 9000
-
-# Changer les permissions du dossier de stockage et de cache
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
-
-# Lancer PHP-FPM au démarrage du container
-CMD ["php-fpm"]
-
+# Commande pour démarrer l'application
+CMD php artisan serve --host=0.0.0.0 --port=$PORT
