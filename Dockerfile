@@ -1,42 +1,54 @@
-# Utilisation de l'image PHP officielle
+# Étape de construction : utiliser une image PHP avec extensions requises pour Laravel
 FROM php:8.3-fpm AS build
 
-# Installation des dépendances système
+# Installer les dépendances nécessaires pour PHP et les extensions
 RUN apt-get update && apt-get install -y \
+    build-essential \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
+    libzip-dev \
     zip \
     unzip \
     git \
     curl \
     libonig-dev \
     libxml2-dev \
-    libzip-dev
+    libcurl4-openssl-dev \
+    libssl-dev \
+    pkg-config \
+    libmagickwand-dev \
+    && pecl install mongodb \
+    && docker-php-ext-enable mongodb
 
-# Installation des extensions PHP requises
+# Installer les extensions PHP requises
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo_mysql gd mbstring zip xml
+    && docker-php-ext-install gd \
+    && docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl bcmath
 
-# Installation de Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Installer Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Définir le répertoire de travail
-WORKDIR /var/www/html
+WORKDIR /var/www
 
-# Copier les fichiers du projet dans le conteneur
+# Copier tous les fichiers de l'application
 COPY . .
 
-# Installation des dépendances PHP avec Composer
+# Installer les dépendances de Composer
 RUN composer install --no-dev --optimize-autoloader
 
-# Ajuster les permissions des fichiers
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html/storage \
-    && chmod -R 755 /var/www/html/bootstrap/cache
+# Étape finale : utiliser une image PHP plus légère
+FROM php:8.3-fpm
+
+# Copier les fichiers de l'étape de construction
+COPY --from=build /var/www /var/www
 
 # Exposer le port défini dans la variable d'environnement PORT
 EXPOSE $PORT
 
-# Commande pour démarrer l'application
-CMD php artisan serve --host=0.0.0.0 --port=$PORT
+# Changer les permissions du dossier de stockage et de cache
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+
+# Lancer PHP-FPM au démarrage du container
+CMD ["php-fpm"]
