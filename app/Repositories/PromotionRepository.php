@@ -21,7 +21,8 @@ class PromotionRepository implements PromotionRepositoryInterface
 
     public function createPromotion(array $promotionDetails)
     {
-        return PromotionFacade::create($promotionDetails);
+        $id = PromotionFacade::create($promotionDetails);
+        return $this->getPromotionById($id);
     }
 
     // public function updatePromotion($id, array $newDetails)

@@ -11,7 +11,6 @@ Route::prefix('v1')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
 
-    Route::apiResource('promotions', PromotionController::class);
     Route::apiResource('/users', UserController::class);
 
     Route::middleware(['auth:api', 'blacklisted'])->group(function () {
@@ -21,10 +20,9 @@ Route::prefix('v1')->group(function () {
         Route::get('/auth/{provider}', [AuthController::class, 'redirectToProvider']);
         Route::get('/auth/{provider}/callback', [AuthController::class, 'handleProviderCallback']);
 
-        //Route::apiResource('referentiels', ReferentielController::class);
 
-        //Route::apiResource('referentiels', ReferentielController::class);
-
+        Route::apiResource('referentiels', ReferentielController::class);
+        
         Route::get('referentiels', [ReferentielController::class, 'index']);
         Route::post('referentiels', [ReferentielController::class, 'store']);
         Route::get('referentiels/{id}', [ReferentielController::class, 'show']);
@@ -35,6 +33,7 @@ Route::prefix('v1')->group(function () {
         Route::get('referentiels/export', [ReferentielController::class, 'export']);
 
 
+        Route::apiResource('promotions', PromotionController::class);
         Route::get('promotions/encours', [PromotionController::class, 'getPromotionEncours']);
         Route::get('promotions/{id}/stats', [PromotionController::class, 'getStats']);
         Route::patch('promotions/{id}/etat', [PromotionController::class, 'changeStatus']);

@@ -3,8 +3,9 @@
 namespace App\Services;
 
 use App\Enums\EtatPromotion;
-use Illuminate\Support\Facades\DB;
 use App\Jobs\SendReleveNotesJob;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Interfaces\PromotionServiceInterface;
 use App\Interfaces\PromotionRepositoryInterface;
 use App\Interfaces\ReferentielRepositoryInterface;
@@ -22,74 +23,53 @@ class PromotionService implements PromotionServiceInterface
         $this->referentielRepository = $referentielRepository;
     }
 
-    // public function createPromotion(array $data)
-    // {
-    //     DB::beginTransaction();
-    //     try {
-    //         $data['etat'] = EtatPromotion::INACTIF;
-    //         if (!isset($data['date_fin'])) {
-    //             $data['date_fin'] = $this->calculerDateFin($data['date_debut'], $data['duree']);
-    //         } elseif (!isset($data['duree'])) {
-    //             $data['duree'] = $this->calculerDuree($data['date_debut'], $data['date_fin']);
-    //         }
-
-    //         $promotion = $this->promotionRepository->createPromotion($data);
-
-    //         if (isset($data['referentiels'])) {
-    //             $this->updatePromotionReferentiels($promotion->id, $data['referentiels']);
-    //         }
-    //         DB::commit();
-    //         return $promotion;
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         throw $e;
-    //     }
-    // }
-
+    // Fonction pour créer une promotion
     public function createPromotion(array $data)
     {
-        // Démarrage de la transaction
         DB::beginTransaction();
 
         try {
-            // Vérifier que le libellé est unique
+            // Vérifier si le libellé de la promotion est unique
             if ($this->promotionRepository->findByLibelle($data['libelle'])) {
                 throw new \Exception("Erreur : le libellé de la promotion doit être unique. La promotion '" . $data['libelle'] . "' existe déjà.");
             }
 
-            // Définir l'état par défaut de la promotion
             $data['etat'] = EtatPromotion::INACTIF;
 
-            // Calculer la date de fin ou la durée en fonction des entrées
+            // Calculer la date de fin ou la durée si nécessaire
             if (!isset($data['date_fin'])) {
-                // Si la date de fin n'est pas fournie, la calculer à partir de la date de début et la durée
                 $data['date_fin'] = $this->calculerDateFin($data['date_debut'], $data['duree']);
             } elseif (!isset($data['duree'])) {
-                // Si la durée n'est pas fournie, la calculer à partir de la date de début et de fin
                 $data['duree'] = $this->calculerDuree($data['date_debut'], $data['date_fin']);
             }
 
-            // Créer la promotion via le repository
+            // Créer la promotion
             $promotion = $this->promotionRepository->createPromotion($data);
+            Log::info('Promotion créée : ', ['promotion' => $promotion]);
 
-            // Si des référentiels sont fournis, les associer à la promotion
+            // Vérifier si l'objet promotion est valide
+            if (!is_object($promotion)) {
+                throw new \Exception("La création de la promotion a échoué ou n'a pas retourné un objet Promotion. Données reçues : " . json_encode($promotion));
+            }
+
+            // Mise à jour des référentiels si présents
             if (isset($data['referentiels'])) {
                 $this->updatePromotionReferentiels($promotion->id, $data['referentiels']);
             }
 
-            // Commit de la transaction après la réussite des opérations
             DB::commit();
-            return $promotion;
+            return [$promotion];
         } catch (\Exception $e) {
-            // Rollback en cas d'erreur
             DB::rollBack();
-            throw $e;  // Rejeter l'exception pour gestion ultérieure
+            Log::error('Erreur lors de la création de la promotion : ' . $e->getMessage(), ['data' => $data]);
+            throw $e;
         }
     }
 
+
+    // Fonction pour mettre à jour une promotion existante
     public function updatePromotion($id, array $data)
     {
-        // Démarrage de la transaction
         DB::beginTransaction();
 
         try {
@@ -141,49 +121,32 @@ class PromotionService implements PromotionServiceInterface
                 $this->updatePromotionReferentiels($id, $data['referentiels']);
             }
 
-            // Commit de la transaction
             DB::commit();
-
             return $updatedPromotion;
         } catch (\Exception $e) {
-            // Rollback en cas d'erreur
             DB::rollBack();
             throw $e;
         }
     }
 
-
-    // public function changePromotionStatus($id, EtatPromotion $newStatus)
-    // {
-    //     if ($newStatus === EtatPromotion::ACTIF) {
-    //         $promotionEnCours = $this->promotionRepository->getPromotionEncours();
-    //         if ($promotionEnCours && $promotionEnCours->id !== $id) {
-    //             throw new \Exception("Une autre promotion est déjà en cours.");
-    //         }
-    //     }
-
-    //     return $this->promotionRepository->updatePromotion($id, ['etat' => $newStatus]);
-    // }
-
-
+    // Fonction pour changer le statut de la promotion
     public function changePromotionStatus($id, EtatPromotion $newStatus)
     {
         return $this->promotionRepository->updatePromotion($id, ['etat' => $newStatus]);
     }
 
+    // Fonction pour obtenir les statistiques d'une promotion
     public function getPromotionStats($id)
     {
         return $this->promotionRepository->getPromotionStats($id);
     }
 
+    // Fonction pour clôturer une promotion
     public function cloturerPromotion($id)
     {
         $promotion = $this->promotionRepository->getPromotionById($id);
-
-        // Vérifier si $promotion est un tableau ou un objet et accéder à la date de fin en conséquence
         $dateFin = is_array($promotion) ? $promotion['date_fin'] : $promotion->date_fin;
 
-        // Convertir la date en instance de Carbon pour effectuer la vérification
         if (\Carbon\Carbon::parse($dateFin)->isPast()) {
             $result = $this->promotionRepository->updatePromotion($id, ['etat' => EtatPromotion::CLOTURER]);
 
@@ -197,6 +160,7 @@ class PromotionService implements PromotionServiceInterface
         return false;
     }
 
+    // Fonction pour mettre à jour les référentiels d'une promotion
     public function updatePromotionReferentiels($promotionId, array $referentielIds)
     {
         $promotion = $this->promotionRepository->getPromotionById($promotionId);
@@ -228,26 +192,18 @@ class PromotionService implements PromotionServiceInterface
         return $this->promotionRepository->getPromotionById($promotionId);
     }
 
+    // Fonction pour vérifier si un référentiel peut être retiré
     private function canRemoveReferentiel($promotionId, $referentielId)
     {
-        // Check if the user has the Manager role
+        // Vérifier si l'utilisateur a le rôle de Manager
         if (auth()->user()->hasRole('Manager')) {
             return true;
         }
 
-        // For other roles (like CM), check if the referentiel is empty
+        // Pour les autres rôles, vérifier si le référentiel est vide
         $referentiel = $this->referentielRepository->findById($referentielId);
         return $referentiel->apprenants()->where('promotion_id', $promotionId)->count() === 0;
     }
-    // private function calculerDateFin($dateDebut, $duree)
-    // {
-    //     return \Carbon\Carbon::parse($dateDebut)->addMonths($duree);
-    // }
-
-    // private function calculerDuree($dateDebut, $dateFin)
-    // {
-    //     return \Carbon\Carbon::parse($dateDebut)->diffInMonths(\Carbon\Carbon::parse($dateFin));
-    // }
 
     // Fonction utilitaire pour calculer la durée entre deux dates
     private function calculerDuree($dateDebut, $dateFin)
@@ -271,6 +227,8 @@ class PromotionService implements PromotionServiceInterface
         $debut = new \DateTime($dateDebut);
         return $debut->add(new \DateInterval("P{$duree}D"))->format('Y-m-d');
     }
+
+    // Implémentation des méthodes de l'interface
     public function getAllPromotions()
     {
         return $this->promotionRepository->getAllPromotions();

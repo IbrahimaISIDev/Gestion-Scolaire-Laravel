@@ -13,9 +13,14 @@ abstract class FirebaseModel
 
     public function __construct()
     {
+        if (!$this->path) {
+            throw new \Exception('Le chemin Firebase (path) doit être défini dans la classe enfant.');
+        }
+
         $this->database = $this->getDatabase();
         $this->reference = $this->database->getReference($this->path);
     }
+
 
     protected function getDatabase(): Database
     {
@@ -31,11 +36,21 @@ abstract class FirebaseModel
         return $result === null ? [] : $result;
     }
 
+    // public function find($id)
+    // {
+    //     $result = $this->reference->getChild($id)->getValue();
+    //     return $result === null ? [] : $result;
+    // }
+
     public function find($id)
     {
+        if (is_null($id)) {
+            throw new \InvalidArgumentException('L\'ID ne peut pas être nul.');
+        }
         $result = $this->reference->getChild($id)->getValue();
         return $result === null ? [] : $result;
     }
+
 
     public function create(array $data)
     {
