@@ -32,14 +32,11 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Définir le répertoire de travail
 WORKDIR /var/www
 
-# Copier uniquement les fichiers nécessaires pour l'installation des dépendances
-COPY composer.json composer.lock ./
+# Copier tous les fichiers de l'application
+COPY . .
 
 # Installer les dépendances de Composer
 RUN composer install --no-dev --optimize-autoloader
-
-# Copier le reste de l'application
-COPY . .
 
 # Étape finale : utiliser une image PHP plus légère
 FROM php:8.3-fpm
