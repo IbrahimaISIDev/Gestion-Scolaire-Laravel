@@ -43,7 +43,9 @@ FROM php:8.3-fpm
 COPY --from=build /var/www /var/www
 
 # Exposer le port défini dans la variable d'environnement PORT
-EXPOSE $PORT
+#EXPOSE $PORT
+
+EXPOSE 801
 
 # Changer les permissions du dossier de stockage et de cache
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
