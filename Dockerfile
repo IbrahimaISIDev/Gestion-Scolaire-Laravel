@@ -1,53 +1,43 @@
-# Étape de construction : utiliser une image PHP avec extensions requises pour Laravel
-FROM php:8.3-fpm AS build
-
-# Installer les dépendances nécessaires pour PHP et les extensions
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libzip-dev \
-    zip \
-    unzip \
-    git \
-    curl \
-    libonig-dev \
-    libxml2-dev \
-    libcurl4-openssl-dev \
-    libssl-dev \
-    pkg-config \
-    libmagickwand-dev
-
-# Installer les extensions PHP requises
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd \
-    && docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl bcmath opcache
-
-# Installer Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-# Définir le répertoire de travail
-WORKDIR /var/www
-
-# Copier tous les fichiers de l'application
-COPY . .
-
-# Installer les dépendances de Composer
-RUN composer install --no-dev --optimize-autoloader
-
-# Étape finale : utiliser une image PHP plus légère pour la production
 FROM php:8.3-fpm
 
-# Copier les fichiers de l'étape de construction
-COPY --from=build /var/www /var/www
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    unzip \
+    nginx
 
-# Exposer le port 9000 pour PHP-FPM
-EXPOSE 9000
+# Clear cache
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# Install PHP extensions
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
-# Changer les permissions du dossier de stockage et de cache
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+# Get latest Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Lancer PHP-FPM au démarrage du container
-CMD ["php-fpm"]
+# Set working directory
+WORKDIR /var/www
+
+# Copy existing application directory contents
+COPY . /var/www
+
+# Copy the entrypoint script and set permissions
+COPY entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Copy existing application directory permissions
+COPY --chown=www-data:www-data . /var/www
+
+# Change current user to www-data
+USER www-data
+
+# Expose port 8081
+EXPOSE 8081
+
+# Set the entrypoint
+ENTRYPOINT ["entrypoint.sh"]
