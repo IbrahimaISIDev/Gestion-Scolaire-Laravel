@@ -1,42 +1,45 @@
+# Utilise l'image officielle PHP 8.1 avec FPM
 FROM php:8.3-fpm
 
-# Installer les dépendances système
+# Installations de dépendances système
 RUN apt-get update && apt-get install -y \
     git \
-    curl \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    zip \
     unzip \
-    nginx
+    curl \
+    libpq-dev \
+    libzip-dev \
+    zip \
+    nginx \
+    postgresql-client \   
+    && docker-php-ext-install pdo pdo_pgsql zip
 
-# Nettoyer le cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+# Configurer Nginx
+COPY nginx/default.conf /etc/nginx/sites-available/default
+RUN rm -f /etc/nginx/sites-enabled/default && \
+    ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
-# Installer les extensions PHP
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
-
-# Obtenir le dernier Composer
+# Installe Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Définir le répertoire de travail
-WORKDIR /var/www
+# Crée un répertoire pour l'application
+WORKDIR /var/www/html
 
-# Copier le contenu du répertoire existant
-COPY . /var/www
+# Copie les fichiers dans le conteneur
+COPY . .
 
-# Copier le script d'entrypoint et définir les permissions
-COPY entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/entrypoint.sh
+# Installe les dépendances PHP
+RUN composer install --no-dev --optimize-autoloader
 
-# Créer les répertoires nécessaires et définir les permissions
-RUN mkdir -p /var/lib/nginx /var/lib/nginx/body /var/log/nginx /var/cache/nginx /run/nginx \
-    && chown -R www-data:www-data /var/lib/nginx /var/log/nginx /var/cache/nginx /run/nginx \
-    && chown -R www-data:www-data /var/www
+# Permissions pour le stockage et le cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Exposer le port 80
+# Copie le script de démarrage
+COPY start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
+# Expose le port 80 pour Nginx et le port 9000 pour PHP-FPM
 EXPOSE 80
+EXPOSE 9000
 
-# Définir l'entrypoint
-ENTRYPOINT ["entrypoint.sh"]
+# Lancer le script de démarrage quand le conteneur démarre
+CMD ["sh", "/usr/local/bin/start.sh"]
