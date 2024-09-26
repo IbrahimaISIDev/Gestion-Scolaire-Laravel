@@ -17,9 +17,7 @@ RUN apt-get update && apt-get install -y \
     libcurl4-openssl-dev \
     libssl-dev \
     pkg-config \
-    libmagickwand-dev \
-    && pecl install mongodb \
-    && docker-php-ext-enable mongodb
+    libmagickwand-dev
 
 # Installer les extensions PHP requises
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
@@ -44,8 +42,8 @@ FROM php:8.3-fpm
 # Copier les fichiers de l'étape de construction
 COPY --from=build /var/www /var/www
 
-# Exposer le port 9000 pour PHP-FPM
-EXPOSE 9000
+# Exposer le port défini dans la variable d'environnement PORT
+EXPOSE $PORT
 
 # Changer les permissions du dossier de stockage et de cache
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
