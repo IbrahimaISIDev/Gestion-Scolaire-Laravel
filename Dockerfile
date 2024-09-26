@@ -30,14 +30,13 @@ COPY . /var/www
 COPY entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Copy existing application directory permissions
-COPY --chown=www-data:www-data . /var/www
+# Create necessary directories and set permissions
+RUN mkdir -p /var/lib/nginx /var/lib/nginx/body /var/log/nginx /var/cache/nginx /run/nginx \
+    && chown -R www-data:www-data /var/lib/nginx /var/log/nginx /var/cache/nginx /run/nginx \
+    && chown -R www-data:www-data /var/www
 
-# Change current user to www-data
-USER www-data
-
-# Expose port 8081
-EXPOSE 8081
+# Expose port 80
+EXPOSE 80
 
 # Set the entrypoint
 ENTRYPOINT ["entrypoint.sh"]
