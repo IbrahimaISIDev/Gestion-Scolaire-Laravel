@@ -1,12 +1,12 @@
 #!/bin/sh
 set -e
 
-# Ensure Nginx can write to the cache directory
+# Assurez-vous que Nginx peut écrire dans le répertoire de cache
 mkdir -p /var/cache/nginx
 chown -R www-data:www-data /var/cache/nginx
 
-# Start PHP-FPM
+# Démarrer PHP-FPM
 php-fpm -D
 
-# Start Nginx
+# Démarrer Nginx
 nginx -g "daemon off;"

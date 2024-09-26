@@ -1,6 +1,6 @@
 FROM php:8.3-fpm
 
-# Install system dependencies
+# Installer les dépendances système
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -11,32 +11,32 @@ RUN apt-get update && apt-get install -y \
     unzip \
     nginx
 
-# Clear cache
+# Nettoyer le cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions
+# Installer les extensions PHP
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
-# Get latest Composer
+# Obtenir le dernier Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set working directory
+# Définir le répertoire de travail
 WORKDIR /var/www
 
-# Copy existing application directory contents
+# Copier le contenu du répertoire existant
 COPY . /var/www
 
-# Copy the entrypoint script and set permissions
+# Copier le script d'entrypoint et définir les permissions
 COPY entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Create necessary directories and set permissions
+# Créer les répertoires nécessaires et définir les permissions
 RUN mkdir -p /var/lib/nginx /var/lib/nginx/body /var/log/nginx /var/cache/nginx /run/nginx \
     && chown -R www-data:www-data /var/lib/nginx /var/log/nginx /var/cache/nginx /run/nginx \
     && chown -R www-data:www-data /var/www
 
-# Expose port 80
+# Exposer le port 80
 EXPOSE 80
 
-# Set the entrypoint
+# Définir l'entrypoint
 ENTRYPOINT ["entrypoint.sh"]
