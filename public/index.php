@@ -49,7 +49,7 @@ $app = require_once __DIR__.'/../bootstrap/app.php';
 $kernel = $app->make(Kernel::class);
 
 // Ajout pour forcer l'écoute sur le port défini
-$port = env('PORT', 8081);
+$port = env('PORT', 9000);
 $app->bind('Illuminate\Http\Request', function () use ($port) {
     return Request::capture()->server->set('SERVER_PORT', $port);
 });
