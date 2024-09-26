@@ -1,22 +1,19 @@
-# Utilise l'image officielle PHP 8.1 avec FPM
+# Utilise l'image officielle PHP 8.3 avec FPM
 FROM php:8.3-fpm
 
-# Installations de dépendances système
+# Installations de dépendances système et extensions PHP
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
     curl \
-    libpq-dev \
     libzip-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
     zip \
-    nginx \
-    postgresql-client \   
-    && docker-php-ext-install pdo pdo_pgsql zip
-
-# Configurer Nginx
-COPY nginx/default.conf /etc/nginx/sites-available/default
-RUN rm -f /etc/nginx/sites-enabled/default && \
-    ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo pdo_mysql zip gd \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Installe Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -37,8 +34,7 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 COPY start.sh /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/start.sh
 
-# Expose le port 80 pour Nginx et le port 9000 pour PHP-FPM
-EXPOSE 80
+# Expose le port 9000 pour PHP-FPM
 EXPOSE 9000
 
 # Lancer le script de démarrage quand le conteneur démarre
