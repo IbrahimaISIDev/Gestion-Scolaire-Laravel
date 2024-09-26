@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y \
 # Installer les extensions PHP requises
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd \
-    && docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl bcmath
+    && docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl bcmath opcache
 
 # Installer Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -36,16 +36,14 @@ COPY . .
 # Installer les dépendances de Composer
 RUN composer install --no-dev --optimize-autoloader
 
-# Étape finale : utiliser une image PHP plus légère
+# Étape finale : utiliser une image PHP plus légère pour la production
 FROM php:8.3-fpm
 
 # Copier les fichiers de l'étape de construction
 COPY --from=build /var/www /var/www
 
-# Exposer le port défini dans la variable d'environnement PORT
-#EXPOSE $PORT
-
-EXPOSE 801
+# Exposer le port défini dans la variable d'environnement PORT (pour la flexibilité)
+EXPOSE 8081
 
 # Changer les permissions du dossier de stockage et de cache
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
