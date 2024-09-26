@@ -1,13 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 
-# Démarre PHP-FPM en arrière-plan
-php-fpm &
+# Démarrez Nginx
+nginx
 
-# Attendre un peu que PHP-FPM soit prêt
-sleep 5
+# Exécutez les migrations de la base de données si nécessaire
+php artisan migrate --force
 
-# Démarre Nginx
-service nginx start
-
-# Garder le script en cours d'exécution
-wait
+# Démarrez PHP-FPM
+php-fpm
