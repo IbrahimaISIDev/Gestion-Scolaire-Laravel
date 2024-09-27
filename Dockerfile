@@ -1,7 +1,7 @@
 # Utilisez l'image officielle PHP 8.3 avec FPM comme base
 FROM php:8.3-fpm
 
-# Installez Nginx et d'autres dépendances nécessaires
+# Installez les dépendances nécessaires
 RUN apt-get update && apt-get install -y \
     nginx \
     git \
@@ -13,7 +13,8 @@ RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
     zip \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo pdo_mysql zip gd
+    && docker-php-ext-install pdo pdo_mysql zip gd \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Installe Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
