@@ -3,67 +3,49 @@
 namespace App\Repositories;
 
 use App\Enums\EtatReferentiel;
+use App\Facades\ReferentielFacade;
 use App\Interfaces\ReferentielRepositoryInterface;
 use App\Services\FirebaseService;
 
 class ReferentielRepository implements ReferentielRepositoryInterface
 {
     protected $firebaseService;
-    protected $referentielsRef;
 
-    public function __construct(FirebaseService $firebaseService)
+    public function __construct(ReferentielFacade $firebaseService)
     {
         $this->firebaseService = $firebaseService;
-        $this->referentielsRef = $this->firebaseService->getDatabase()->getReference('referentiels');
     }
 
     public function all()
     {
-        $referentiels = $this->referentielsRef->getValue();
-        return $referentiels ?? []; // Return an empty array if no data is found
+        return ReferentielFacade::all();
     }
 
 
     public function find($id)
     {
-        return $this->referentielsRef->getChild($id)->getValue();
+        return ReferentielFacade::find($id);
     }
 
     public function create(array $data)
     {
-        // Récupérer le dernier ID et l'incrémenter
-        $lastId = $this->firebaseService->getLastReferentielId();
-        $newId = $lastId + 1;
-
-        // Créer le nouveau référentiel avec l'ID incrémenté
-        $this->firebaseService->createReferentielWithId($data, $newId);
-
-        // Mettre à jour le dernier ID dans Firebase
-        $this->firebaseService->updateLastReferentielId($newId);
-
-        return ['id' => $newId] + $data;
+        return ReferentielFacade::create($data);
     }
 
     public function update($id, array $data)
     {
-        $this->referentielsRef->getChild($id)->update($data);
-        return $this->find($id);
+        return ReferentielFacade::update($id)->set($data);
     }
 
     public function delete($id)
     {
-        return $this->referentielsRef->getChild($id)->remove();
+        return (array) ReferentielFacade::delete($id);
     }
 
     public function findById($id)
     {
         return $this->find($id);
     }
-
-    // public function getReferentielById($id)
-    // {
-    //     return $this->find($id);
-    // }
 
     public function getAllReferentiels()
     {
@@ -99,38 +81,69 @@ class ReferentielRepository implements ReferentielRepositoryInterface
                 return ['id' => $id] + $referentiel;
             }
         }
-        return null; // Return null if no match is found
+        return null;
     }
-    // public function addCompetenceToReferentiel($referentielId, $competence)
-    // {
-    //     $competenceRef = $this->referentielsRef->getChild($referentielId)->getChild('competences')->push($competence);
-    //     return ['id' => $competenceRef->getKey()] + $competence;
-    // }
-
-    public function addCompetenceToReferentiel($referentielId, array $competence)
-    {
-        $competencesRef = $this->referentielsRef->getChild($referentielId)->getChild('competences');
-        $competenceRef = $competencesRef->push($competence);
-
-        error_log('Compétence ajoutée : ' . json_encode($competence) . ' avec ID : ' . $competenceRef->getKey());
-
-        return ['id' => $competenceRef->getKey()] + $competence;
-    }
-
-    public function getCompetencesByReferentielId($referentielId)
-    {
-        $competences = $this->referentielsRef->getChild($referentielId)->getChild('competences')->getValue() ?? [];
-        error_log('Compétences récupérées pour le référentiel ' . $referentielId . ': ' . json_encode($competences));
-        return $competences;
-    }
-
 
     public function getReferentielById($id)
     {
         $referentiel = $this->find($id);
         if ($referentiel) {
-            $referentiel['competences'] = $this->getCompetencesByReferentielId($id);
+            $referentiel->competences = $this->getCompetencesByReferentielId($id);
         }
         return $referentiel;
+    }
+
+    public function addCompetenceToReferentiel($referentielId, $competenceData)
+    {
+        // Ajouter la compétence au référentiel via son ID
+        $referentiel = ReferentielFacade::find($referentielId);
+        $referentiel->competences()->create($competenceData);
+    }
+
+    // Méthode pour récupérer toutes les compétences d'un référentiel
+    public function getCompetencesByReferentielId($referentielId)
+    {
+        return ReferentielFacade::find($referentielId);
+    }
+
+    // Nouvelle méthode : modifier une compétence
+    public function updateCompetence($competenceId, $updatedData)
+    {
+        $competence = ReferentielFacade::find($competenceId);
+        $competence->update($updatedData);
+    }
+
+    // Nouvelle méthode : supprimer une compétence
+    public function deleteCompetence($competenceId)
+    {
+        $competence = ReferentielFacade::find($competenceId);
+        $competence->delete();
+    }
+
+    // Nouvelle méthode : ajouter un module à une compétence
+    public function addModuleToCompetence($competenceId, $moduleData)
+    {
+        $competence = ReferentielFacade::find($competenceId);
+        $competence->modules()->create($moduleData);
+    }
+
+    // Nouvelle méthode : lister les modules d'une compétence
+    public function getModulesByCompetenceId($competenceId)
+    {
+        return ReferentielFacade::find($competenceId);
+    }
+
+    // Nouvelle méthode : modifier un module
+    public function updateModule($moduleId, $updatedData)
+    {
+        $module = ReferentielFacade::find($moduleId);
+        $module->update($updatedData);
+    }
+
+    // Nouvelle méthode : supprimer un module
+    public function deleteModule($moduleId)
+    {
+        $module = ReferentielFacade::find($moduleId);
+        $module->delete();
     }
 }

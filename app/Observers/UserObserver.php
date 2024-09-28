@@ -3,14 +3,15 @@
 namespace App\Observers;
 
 use App\Events\UserCreated;
-use App\Models\UserMysql;
+use App\Models\User;
 use App\Facades\UserFirebase;
 
 class UserObserver
 {
-    public function created(UserMysql $userMysql)
+    public function created(User $User)
     {
-        $userFirebase = UserFirebase::find($userMysql->id);
-        event(new UserCreated($userMysql, $userFirebase));
+        $userFirebase = UserFirebase::find($User->id) ?? null;
+        // event(new UserCreated($User, $userFirebase));
     }
 }
+

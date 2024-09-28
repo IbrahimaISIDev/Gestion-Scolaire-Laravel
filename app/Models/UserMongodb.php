@@ -24,7 +24,7 @@ class UserMongodb extends Model implements Authenticatable
         'telephone', 
         'photo', 
         'fonction', 
-        'statut'
+        'status'
     ];
 
     protected $hidden = [

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Enums\EtatPromotion;
 use Illuminate\Http\Request;
-use App\Http\Requests\StorePromotionRequest;
 use App\Http\Requests\UpdatePromotionRequest;
 use App\Interfaces\PromotionServiceInterface;
 
@@ -32,9 +31,9 @@ class PromotionController extends Controller
         return response()->json($this->promotionService->getPromotionById($id));
     }
 
-    public function update(UpdatePromotionRequest $request, $id)
+    public function update(Request $request, $id)
     {
-        $promotion = $this->promotionService->updatePromotion($id, $request->validated());
+        $promotion = $this->promotionService->updatePromotion($id, $request->all());
         return response()->json($promotion);
     }
 
@@ -71,7 +70,7 @@ class PromotionController extends Controller
 
     public function updateReferentiels($id, Request $request)
     {
-        $request->validate([
+        $request->all([
             'referentiels' => 'required|array',
             'referentiels.*' => 'exists:referentiels,id',
         ]);

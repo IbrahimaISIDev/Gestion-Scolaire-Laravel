@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Enums\EtatPromotion;
 use App\Facades\PromotionFacade;
-use App\Models\PromotionFirebase;
 use App\Interfaces\PromotionRepositoryInterface;
 
 class PromotionRepository implements PromotionRepositoryInterface
@@ -16,24 +15,19 @@ class PromotionRepository implements PromotionRepositoryInterface
 
     public function getPromotionById($id)
     {
-        return PromotionFacade::find($id);
+        return PromotionFacade::with(['apprenants', 'referentiels'])->find($id);
     }
 
     public function createPromotion(array $promotionDetails)
     {
-        $id = PromotionFacade::create($promotionDetails);
-        return $this->getPromotionById($id);
+        return PromotionFacade::create($promotionDetails);
     }
-
-    // public function updatePromotion($id, array $newDetails)
-    // {
-    //     return PromotionFacade::whereId($id)->update($newDetails);
-    // }
 
     public function updatePromotion($id, array $newDetails)
     {
         return PromotionFacade::updatePromotion($id, $newDetails);
     }
+
     public function deletePromotion($id)
     {
         PromotionFacade::destroy($id);
@@ -46,14 +40,17 @@ class PromotionRepository implements PromotionRepositoryInterface
 
     public function addReferentielToPromotion($promotionId, $referentielId)
     {
-        $promotion = $this->getPromotionById($promotionId);
-        $promotion->referentiels()->attach($referentielId);
+        $this->getPromotionById($promotionId)->referentiels()->attach($referentielId);
     }
 
     public function removeReferentielFromPromotion($promotionId, $referentielId)
     {
-        $promotion = $this->getPromotionById($promotionId);
-        $promotion->referentiels()->detach($referentielId);
+        $this->getPromotionById($promotionId)->referentiels()->detach($referentielId);
+    }
+
+    public function findByLibelle($libelle)
+    {
+        return PromotionFacade::where('libelle', $libelle)->first();
     }
 
     public function getPromotionStats($id)
@@ -61,10 +58,15 @@ class PromotionRepository implements PromotionRepositoryInterface
         $promotion = $this->getPromotionById($id);
         return [
             'info' => $promotion,
-            'nombre_apprenants' => $promotion->apprenants()->count(),
-            'nombre_apprenants_actifs' => $promotion->apprenants()->where('statut', 'actif')->count(),
-            'nombre_apprenants_inactifs' => $promotion->apprenants()->where('statut', 'inactif')->count(),
-            'referentiels' => $promotion->referentiels()->withCount('apprenants')->get(),
+            'nombre_apprenants' => $promotion->apprenants->count(),
+            'nombre_apprenants_actifs' => $promotion->apprenants->where('statut', 'actif')->count(),
+            'nombre_apprenants_inactifs' => $promotion->apprenants->where('statut', 'inactif')->count(),
+            'referentiels' => $promotion->referentiels->map(function ($referentiel) {
+                return [
+                    'info' => $referentiel,
+                    'apprenants_count' => $referentiel->apprenants->count(),
+                ];
+            }),
         ];
     }
 
@@ -77,24 +79,5 @@ class PromotionRepository implements PromotionRepositoryInterface
             return true;
         }
         return false;
-    }
-
-    public function findByLibelle($libelle)
-    {
-        $promotions = $this->getAllPromotions();
-
-        // Ensure $promotions is an array before looping
-        if (!is_array($promotions)) {
-            return null;
-        }
-
-        foreach ($promotions as $id => $promotion) {
-            // Check if $promotion is valid and contains the 'libelle' key
-            if (is_array($promotion) && isset($promotion['libelle']) && $promotion['libelle'] === $libelle) {
-                return $promotion;
-            }
-        }
-
-        return null;
     }
 }

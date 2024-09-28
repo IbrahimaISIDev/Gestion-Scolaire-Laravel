@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\User;
 use App\Models\UserMysql;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -9,23 +10,23 @@ class UserPolicy
 {
     use HandlesAuthorization;
 
-    public function viewAny(UserMysql $user)
+    public function viewAny(User $user)
     {
         return $user->fonction === 'ADMIN' || ($user->fonction === 'MANAGER');
     }
 
-    public function view(UserMysql $user, UserMysql $model)
+    public function view(User $user, User $model)
     {
         return $user->fonction === 'ADMIN' || ($user->fonction === 'MANAGER' && $model->fonction !== 'ADMIN');
     }
 
-    public function create(UserMysql $user)
+    public function create(User $user)
     {
         $fonction = $user->fonction;
         return $this->canCreateUser($user, $fonction);
     }
 
-    public function canCreateUser(UserMysql $user, string $fonction)
+    public function canCreateUser(User $user, string $fonction)
     {
         if ($user->fonction === 'ADMIN') {
             return in_array($fonction, ['ADMIN', 'Coach', 'MANAGER', 'CM']);
@@ -35,12 +36,12 @@ class UserPolicy
         return false;
     }
 
-    public function update(UserMysql $user, UserMysql $model)
+    public function update(User $user, User $model)
     {
         return $user->fonction === 'ADMIN' || ($user->fonction === 'MANAGER' && $model->fonction !== 'ADMIN');
     }
 
-    public function delete(UserMysql $user)
+    public function delete(User $user)
     {
         return $user->fonction === 'ADMIN';
     }

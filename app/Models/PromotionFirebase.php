@@ -86,8 +86,9 @@ class PromotionFirebase extends FirebaseModel implements PromotionFirebaseInterf
         if (!$promotion) {
             return null;
         }
+        $promotionArray = (array) $promotion;
 
-        $updatedPromotion = array_merge($promotion, $newDetails);
+        $updatedPromotion = array_merge($promotionArray, $newDetails);
         $this->reference->getChild($id)->set($updatedPromotion);
 
         return $updatedPromotion;

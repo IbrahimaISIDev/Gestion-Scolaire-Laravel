@@ -22,10 +22,6 @@ class UpdatePromotionRequest extends FormRequest
             'photo_couverture' => 'nullable|image|max:2048',
             'etat' => 'sometimes|required|in:' . implode(',', array_column(EtatPromotion::cases(), 'value')),
         ];
-        
-        $request->validate([
-            'etat' => 'required|in:actif,inactif,cloturer', // Ajoutez toutes les valeurs possibles
-        ]);
     }
 
     public function messages()

@@ -11,4 +11,4 @@ interface PromotionFirebaseInterface
     public function calculerDateFin();
     public function __get($name);
 
-}
+}   

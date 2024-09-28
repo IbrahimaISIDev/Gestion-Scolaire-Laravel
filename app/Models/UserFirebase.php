@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
+use App\Observers\UserObserver;
 use App\Interfaces\UserFirebaseInterface;
 
 class UserFirebase extends FirebaseModel implements UserFirebaseInterface
 {
-   protected $path = 'users';
-
+    protected $path = 'users';
 
     protected $fillable = [
         'nom',
@@ -18,11 +18,13 @@ class UserFirebase extends FirebaseModel implements UserFirebaseInterface
         'telephone',
         'photo',
         'fonction',
-        'statut'
+        'role_id',
+        'status'
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
     ];
+    
 }

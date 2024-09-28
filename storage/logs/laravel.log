@@ -1,0 +1,101 @@
+[2024-09-28 15:41:33] local.ERROR: Cannot declare class App\Listeners\SendApprenantWelcomeEmail, because the name is already in use {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Cannot declare class App\\Listeners\\SendApprenantWelcomeEmail, because the name is already in use at /home/dev/Documents/gestion_scolaire/app/Models/SendApprenantWelcomeEmail.php:8)
+[stacktrace]
+#0 {main}
+"} 
+[2024-09-28 15:42:33] local.ERROR: Cannot declare class App\Listeners\SendApprenantWelcomeEmail, because the name is already in use {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Cannot declare class App\\Listeners\\SendApprenantWelcomeEmail, because the name is already in use at /home/dev/Documents/gestion_scolaire/app/Models/SendApprenantWelcomeEmail.php:8)
+[stacktrace]
+#0 {main}
+"} 
+[2024-09-28 15:43:33] local.ERROR: Cannot declare class App\Listeners\SendApprenantWelcomeEmail, because the name is already in use {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Cannot declare class App\\Listeners\\SendApprenantWelcomeEmail, because the name is already in use at /home/dev/Documents/gestion_scolaire/app/Models/SendApprenantWelcomeEmail.php:8)
+[stacktrace]
+#0 {main}
+"} 
+[2024-09-28 15:43:42] local.ERROR: Required @OA\PathItem() not found {"exception":"[object] (ErrorException(code: 0): Required @OA\\PathItem() not found at /home/dev/Documents/gestion_scolaire/vendor/zircote/swagger-php/src/Loggers/DefaultLogger.php:31)
+[stacktrace]
+#0 /home/dev/Documents/gestion_scolaire/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\\Foundation\\Bootstrap\\HandleExceptions->handleError()
+#1 [internal function]: Illuminate\\Foundation\\Bootstrap\\HandleExceptions->Illuminate\\Foundation\\Bootstrap\\{closure}()
+#2 /home/dev/Documents/gestion_scolaire/vendor/zircote/swagger-php/src/Loggers/DefaultLogger.php(31): trigger_error()
+#3 /home/dev/Documents/gestion_scolaire/vendor/psr/log/src/LoggerTrait.php(61): OpenApi\\Loggers\\DefaultLogger->log()
+#4 /home/dev/Documents/gestion_scolaire/vendor/zircote/swagger-php/src/Annotations/OpenApi.php(157): Psr\\Log\\AbstractLogger->warning()
+#5 /home/dev/Documents/gestion_scolaire/vendor/zircote/swagger-php/src/Analysis.php(440): OpenApi\\Annotations\\OpenApi->validate()
+#6 /home/dev/Documents/gestion_scolaire/vendor/zircote/swagger-php/src/Generator.php(520): OpenApi\\Analysis->validate()
+#7 /home/dev/Documents/gestion_scolaire/vendor/darkaonline/l5-swagger/src/Generator.php(191): OpenApi\\Generator->generate()
+#8 /home/dev/Documents/gestion_scolaire/vendor/darkaonline/l5-swagger/src/Generator.php(132): L5Swagger\\Generator->scanFilesForDocumentation()
+#9 /home/dev/Documents/gestion_scolaire/vendor/darkaonline/l5-swagger/src/Console/GenerateDocsCommand.php(72): L5Swagger\\Generator->generateDocs()
+#10 /home/dev/Documents/gestion_scolaire/vendor/darkaonline/l5-swagger/src/Console/GenerateDocsCommand.php(58): L5Swagger\\Console\\GenerateDocsCommand->generateDocumentation()
+#11 /home/dev/Documents/gestion_scolaire/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): L5Swagger\\Console\\GenerateDocsCommand->handle()
+#12 /home/dev/Documents/gestion_scolaire/vendor/laravel/framework/src/Illuminate/Container/Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#13 /home/dev/Documents/gestion_scolaire/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure()
+#14 /home/dev/Documents/gestion_scolaire/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#15 /home/dev/Documents/gestion_scolaire/vendor/laravel/framework/src/Illuminate/Container/Container.php(662): Illuminate\\Container\\BoundMethod::call()
+#16 /home/dev/Documents/gestion_scolaire/vendor/laravel/framework/src/Illuminate/Console/Command.php(211): Illuminate\\Container\\Container->call()
+#17 /home/dev/Documents/gestion_scolaire/vendor/symfony/console/Command/Command.php(326): Illuminate\\Console\\Command->execute()
+#18 /home/dev/Documents/gestion_scolaire/vendor/laravel/framework/src/Illuminate/Console/Command.php(180): Symfony\\Component\\Console\\Command\\Command->run()
+#19 /home/dev/Documents/gestion_scolaire/vendor/symfony/console/Application.php(1096): Illuminate\\Console\\Command->run()
+#20 /home/dev/Documents/gestion_scolaire/vendor/symfony/console/Application.php(324): Symfony\\Component\\Console\\Application->doRunCommand()
+#21 /home/dev/Documents/gestion_scolaire/vendor/symfony/console/Application.php(175): Symfony\\Component\\Console\\Application->doRun()
+#22 /home/dev/Documents/gestion_scolaire/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(201): Symfony\\Component\\Console\\Application->run()
+#23 /home/dev/Documents/gestion_scolaire/artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle()
+#24 {main}
+"} 
+[2024-09-28 15:44:33] local.ERROR: Cannot declare class App\Listeners\SendApprenantWelcomeEmail, because the name is already in use {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Cannot declare class App\\Listeners\\SendApprenantWelcomeEmail, because the name is already in use at /home/dev/Documents/gestion_scolaire/app/Models/SendApprenantWelcomeEmail.php:8)
+[stacktrace]
+#0 {main}
+"} 
+[2024-09-28 15:45:33] local.ERROR: Cannot declare class App\Listeners\SendApprenantWelcomeEmail, because the name is already in use {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Cannot declare class App\\Listeners\\SendApprenantWelcomeEmail, because the name is already in use at /home/dev/Documents/gestion_scolaire/app/Models/SendApprenantWelcomeEmail.php:8)
+[stacktrace]
+#0 {main}
+"} 
+[2024-09-28 15:46:33] local.ERROR: Cannot declare class App\Listeners\SendApprenantWelcomeEmail, because the name is already in use {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Cannot declare class App\\Listeners\\SendApprenantWelcomeEmail, because the name is already in use at /home/dev/Documents/gestion_scolaire/app/Models/SendApprenantWelcomeEmail.php:8)
+[stacktrace]
+#0 {main}
+"} 
+[2024-09-28 15:47:33] local.ERROR: Cannot declare class App\Listeners\SendApprenantWelcomeEmail, because the name is already in use {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Cannot declare class App\\Listeners\\SendApprenantWelcomeEmail, because the name is already in use at /home/dev/Documents/gestion_scolaire/app/Models/SendApprenantWelcomeEmail.php:8)
+[stacktrace]
+#0 {main}
+"} 
+[2024-09-28 15:48:33] local.ERROR: Cannot declare class App\Listeners\SendApprenantWelcomeEmail, because the name is already in use {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Cannot declare class App\\Listeners\\SendApprenantWelcomeEmail, because the name is already in use at /home/dev/Documents/gestion_scolaire/app/Models/SendApprenantWelcomeEmail.php:8)
+[stacktrace]
+#0 {main}
+"} 
+[2024-09-28 15:49:33] local.ERROR: Cannot declare class App\Listeners\SendApprenantWelcomeEmail, because the name is already in use {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Cannot declare class App\\Listeners\\SendApprenantWelcomeEmail, because the name is already in use at /home/dev/Documents/gestion_scolaire/app/Models/SendApprenantWelcomeEmail.php:8)
+[stacktrace]
+#0 {main}
+"} 
+[2024-09-28 15:50:33] local.ERROR: Cannot declare class App\Listeners\SendApprenantWelcomeEmail, because the name is already in use {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Cannot declare class App\\Listeners\\SendApprenantWelcomeEmail, because the name is already in use at /home/dev/Documents/gestion_scolaire/app/Models/SendApprenantWelcomeEmail.php:8)
+[stacktrace]
+#0 {main}
+"} 
+[2024-09-28 15:51:33] local.ERROR: Cannot declare class App\Listeners\SendApprenantWelcomeEmail, because the name is already in use {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Cannot declare class App\\Listeners\\SendApprenantWelcomeEmail, because the name is already in use at /home/dev/Documents/gestion_scolaire/app/Models/SendApprenantWelcomeEmail.php:8)
+[stacktrace]
+#0 {main}
+"} 
+[2024-09-28 15:52:33] local.ERROR: Cannot declare class App\Listeners\SendApprenantWelcomeEmail, because the name is already in use {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Cannot declare class App\\Listeners\\SendApprenantWelcomeEmail, because the name is already in use at /home/dev/Documents/gestion_scolaire/app/Models/SendApprenantWelcomeEmail.php:8)
+[stacktrace]
+#0 {main}
+"} 
+[2024-09-28 15:53:33] local.ERROR: Cannot declare class App\Listeners\SendApprenantWelcomeEmail, because the name is already in use {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Cannot declare class App\\Listeners\\SendApprenantWelcomeEmail, because the name is already in use at /home/dev/Documents/gestion_scolaire/app/Models/SendApprenantWelcomeEmail.php:8)
+[stacktrace]
+#0 {main}
+"} 
+[2024-09-28 15:54:33] local.ERROR: Cannot declare class App\Listeners\SendApprenantWelcomeEmail, because the name is already in use {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Cannot declare class App\\Listeners\\SendApprenantWelcomeEmail, because the name is already in use at /home/dev/Documents/gestion_scolaire/app/Models/SendApprenantWelcomeEmail.php:8)
+[stacktrace]
+#0 {main}
+"} 
+[2024-09-28 15:55:33] local.ERROR: Cannot declare class App\Listeners\SendApprenantWelcomeEmail, because the name is already in use {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Cannot declare class App\\Listeners\\SendApprenantWelcomeEmail, because the name is already in use at /home/dev/Documents/gestion_scolaire/app/Models/SendApprenantWelcomeEmail.php:8)
+[stacktrace]
+#0 {main}
+"} 
+[2024-09-28 15:56:33] local.ERROR: Cannot declare class App\Listeners\SendApprenantWelcomeEmail, because the name is already in use {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Cannot declare class App\\Listeners\\SendApprenantWelcomeEmail, because the name is already in use at /home/dev/Documents/gestion_scolaire/app/Models/SendApprenantWelcomeEmail.php:8)
+[stacktrace]
+#0 {main}
+"} 
+[2024-09-28 15:57:33] local.ERROR: Cannot declare class App\Listeners\SendApprenantWelcomeEmail, because the name is already in use {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Cannot declare class App\\Listeners\\SendApprenantWelcomeEmail, because the name is already in use at /home/dev/Documents/gestion_scolaire/app/Models/SendApprenantWelcomeEmail.php:8)
+[stacktrace]
+#0 {main}
+"} 
+[2024-09-28 17:04:19] local.ERROR: Method Illuminate\Foundation\Application::run does not exist. {"exception":"[object] (BadMethodCallException(code: 0): Method Illuminate\\Foundation\\Application::run does not exist. at /home/dev/Documents/gestion_scolaire/vendor/laravel/framework/src/Illuminate/Macroable/Traits/Macroable.php:112)
+[stacktrace]
+#0 /home/dev/Documents/gestion_scolaire/public/index.php(66): Illuminate\\Foundation\\Application->__call()
+#1 {main}
+"} 

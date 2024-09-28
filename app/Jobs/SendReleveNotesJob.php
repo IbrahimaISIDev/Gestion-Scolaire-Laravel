@@ -21,7 +21,6 @@ class SendReleveNotesJob implements ShouldQueue
 
     public function handle()
     {
-        // Logique pour envoyer les relevés de notes
-        // À implémenter selon vos besoins
+        
     }
 }

@@ -6,8 +6,8 @@ interface ReferentielRepositoryInterface
 {
     public function all();
     public function find($id);
-    public function create(array $data); // Change to match the method name in the repository class
-    public function update($id, array $data); // Same here
+    public function create(array $data);
+    public function update($id, array $data);
     public function delete($id);
     public function findById($id);
     public function getReferentielById($id);
@@ -16,7 +16,13 @@ interface ReferentielRepositoryInterface
     public function deleteReferentiel($id);
     public function getArchivedReferentiels();
     public function findByCode($code);
-    public function addCompetenceToReferentiel($referentielId, array $competence);
+    public function addCompetenceToReferentiel($referentielId, $competenceData);
+    public function updateCompetence($competenceId, $updatedData);
+    public function deleteCompetence($competenceId);
+    public function addModuleToCompetence($competenceId, $moduleData);
+    public function getModulesByCompetenceId($competenceId);
+    public function updateModule($moduleId, $updatedData);
+    public function deleteModule($moduleId);
     public function getCompetencesByReferentielId($referentielId);
 
 }

@@ -30,13 +30,9 @@ class ReferentielController extends Controller
     }
 
 
-    public function store(StoreReferentielRequest $request)
+    public function store(Request $request)
     {
-        $referentiel = $this->referentielService->createReferentiel($request->validated());
-        return response()->json([
-            'message' => __('messages.referentiel_created'),
-            'data' => $referentiel,
-        ], 201);
+        return $this->referentielService->createReferentiel($request->all());
     }
 
 
@@ -56,10 +52,9 @@ class ReferentielController extends Controller
         return response()->json($referentiel);
     }
 
-
-    public function update(UpdateReferentielRequest $request, $id)
+    public function update(Request $request, $id)
     {
-        $referentiel = $this->referentielService->updateReferentiel($id, $request->validated());
+        $referentiel = $this->referentielService->updateReferentiel($id, $request->all());
         return response()->json($referentiel);
     }
 
@@ -79,6 +74,67 @@ class ReferentielController extends Controller
         return response()->json(['message' => 'Referentiel archivé avec succès'], 204);
     }
 
+    public function addCompetenceToReferentiel($referentielId, Request $request)
+    {
+        $competenceData = $request->validate([
+            'titre' => 'required|string',
+            'description' => 'nullable|string',
+        ]);
+        $this->referentielService->addCompetenceToReferentiel($referentielId, $competenceData);
+        return response()->json(['message' => 'Compétence ajoutée avec succès'], 200);
+    }
 
-    // Autres méthodes pour gérer les compétences et les modules...
+    // Méthode pour modifier une compétence
+    public function updateCompetence($competenceId, Request $request)
+    {
+        $updatedData = $request->validate([
+            'titre' => 'required|string',
+            'description' => 'nullable|string',
+        ]);
+        $this->referentielService->updateCompetence($competenceId, $updatedData);
+        return response()->json(['message' => 'Compétence modifiée avec succès'], 200);
+    }
+
+    // Méthode pour supprimer une compétence
+    public function deleteCompetence($competenceId)
+    {
+        $this->referentielService->deleteCompetence($competenceId);
+        return response()->json(['message' => 'Compétence supprimée avec succès'], 200);
+    }
+
+    // Méthode pour ajouter un module à une compétence
+    public function addModuleToCompetence($competenceId, Request $request)
+    {
+        $moduleData = $request->validate([
+            'titre' => 'required|string',
+            'description' => 'nullable|string',
+        ]);
+        $this->referentielService->addModuleToCompetence($competenceId, $moduleData);
+        return response()->json(['message' => 'Module ajouté avec succès'], 200);
+    }
+
+    // Méthode pour lister les modules d'une compétence
+    public function getModulesByCompetenceId($competenceId)
+    {
+        $modules = $this->referentielService->getModulesByCompetenceId($competenceId);
+        return response()->json($modules, 200);
+    }
+
+    // Méthode pour modifier un module
+    public function updateModule($moduleId, Request $request)
+    {
+        $updatedData = $request->validate([
+            'titre' => 'required|string',
+            'description' => 'nullable|string',
+        ]);
+        $this->referentielService->updateModule($moduleId, $updatedData);
+        return response()->json(['message' => 'Module modifié avec succès'], 200);
+    }
+
+    // Méthode pour supprimer un module
+    public function deleteModule($moduleId)
+    {
+        $this->referentielService->deleteModule($moduleId);
+        return response()->json(['message' => 'Module supprimé avec succès'], 200);
+    }
 }

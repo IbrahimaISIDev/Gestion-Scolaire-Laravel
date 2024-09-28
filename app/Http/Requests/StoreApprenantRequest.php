@@ -3,14 +3,12 @@
 namespace App\Http\Requests;
 
 use App\Enums\EtatEnum;
-use App\Models\UserMysql;
 use App\Rules\EmailRule;
-use App\Enums\FonctionState;
 use App\Rules\TelephoneRule;
 use App\Rules\CustumPasswordRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreUserRequest extends FormRequest
+class StoreApprenantRequest extends FormRequest
 {
     public function authorize()
     {
@@ -24,13 +22,13 @@ class StoreUserRequest extends FormRequest
             'nom' => 'required|string|max:255',
             'prenom' => 'required|string|max:255',
             'adresse' => 'required|string',
-            'role_id' => 'required|numeric|exists:roles,id|in:1,2',
-            'email' => ['required',new EmailRule(),'unique:users,email'],
-            'password' =>['required', new CustumPasswordRule()],
-            'telephone' => ['required',new TelephoneRule(),'unique:users,telephone'],
-            'photo' => 'nullable|image|max:2048',
+            'email' => ['required', new EmailRule(), 'unique:apprenants,email'],
+            'password' => ['required', new CustumPasswordRule()],
+            'telephone' => ['required', new TelephoneRule(), 'unique:apprenants,telephone'],
             'statut' => ['string', 'in:' . implode(',', array_map(fn($case) => $case->value, EtatEnum::cases()))],
-            'fonction' => 'required|string|max:255',
+            'photo_couverture' => 'nullable|image|max:2048',
+            'referentiel' => 'array',
+            'date_naissance' => 'nullable|date',
         ];
     }
 
